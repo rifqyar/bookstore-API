@@ -1,0 +1,552 @@
+basePath: /
+definitions:
+  dto.BestsellerReportResponse:
+    properties:
+      book_id:
+        example: 1
+        type: integer
+      sold:
+        example: 15
+        type: integer
+      title:
+        example: Laskar Pelangi
+        type: string
+    type: object
+  dto.CategoryRequest:
+    properties:
+      name:
+        example: Fiksi
+        type: string
+    type: object
+  dto.CreateBook:
+    properties:
+      author:
+        type: string
+      category_id:
+        type: integer
+      image_base64:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      title:
+        type: string
+      year:
+        type: integer
+    required:
+    - author
+    - category_id
+    - price
+    - stock
+    - title
+    type: object
+  dto.CreateOrderRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dto.OrderItemRequest'
+        type: array
+    type: object
+  dto.OrderItemRequest:
+    properties:
+      book_id:
+        example: 1
+        type: integer
+      quantity:
+        example: 2
+        type: integer
+    type: object
+  dto.PriceStatsReportResponse:
+    properties:
+      avg:
+        example: 75000
+        type: number
+      max:
+        example: 120000
+        type: number
+      min:
+        example: 25000
+        type: number
+    type: object
+  dto.SalesReportResponse:
+    properties:
+      books_sold:
+        example: 25
+        type: integer
+      revenue:
+        example: 1500000
+        type: number
+    type: object
+  dto.UpdateBook:
+    properties:
+      author:
+        type: string
+      category_id:
+        type: integer
+      image_base64:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      title:
+        type: string
+      year:
+        type: integer
+    type: object
+  dto.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.UserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: rifqyaditya55@gmail.com
+    name: API Support
+  description: This is a RESTful API for a bookstore application (technical test).
+  termsOfService: http://swagger.io/terms/
+  title: Bookstore REST API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search keyword (title or author)
+        in: query
+        name: q
+        type: string
+      - description: Filter by category id or name
+        in: query
+        name: category
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List books
+      tags:
+      - Books
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Book info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateBook'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create book
+      tags:
+      - Books
+  /books/{id}:
+    delete:
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete book
+      tags:
+      - Books
+    get:
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get book
+      tags:
+      - Books
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Book info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateBook'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update book
+      tags:
+      - Books
+  /categories:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List categories
+      tags:
+      - Categories
+    post:
+      consumes:
+      - application/json
+      description: Admin creates a new category
+      parameters:
+      - description: Category info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create category
+      tags:
+      - Categories
+  /categories/{id}:
+    delete:
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete category
+      tags:
+      - Categories
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update books category
+      tags:
+      - Categories
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT token
+      parameters:
+      - description: Login info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login user
+      tags:
+      - Auth
+  /orders:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - BearerAuth: []
+      summary: List orders
+      tags:
+      - Orders
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order items
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create order
+      tags:
+      - Orders
+  /orders/{id}:
+    get:
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get order
+      tags:
+      - Orders
+  /orders/{id}/pay:
+    post:
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Pay order
+      tags:
+      - Orders
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account
+      parameters:
+      - description: User info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register new user
+      tags:
+      - Auth
+  /reports/bestseller:
+    get:
+      description: Show top 3 best selling books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.BestsellerReportResponse'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Bestseller report
+      tags:
+      - Reports
+  /reports/prices:
+    get:
+      description: Show max, min, and average price of books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PriceStatsReportResponse'
+      security:
+      - BearerAuth: []
+      summary: Price stats
+      tags:
+      - Reports
+  /reports/sales:
+    get:
+      description: Show total revenue and total books sold
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SalesReportResponse'
+      security:
+      - BearerAuth: []
+      summary: Sales report
+      tags:
+      - Reports
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
