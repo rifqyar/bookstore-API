@@ -1,10 +1,11 @@
-# 📚 Bookstore RESTful API (Golang + Gin + PostgreSQL)
+# Bookstore RESTful API (Golang + Gin + PostgreSQL)
 
 RESTful API untuk sistem bookstore, dikembangkan dengan **Golang**, **Gin**, **GORM**, dan **PostgreSQL**.  
 
-### DB Seeder
+### Running with Seeder + Faker
 ```bash
 go run .\cmd\main.go seed:db
+```
 
 ### Default User
 | Role  | Email                                         | Password |
