@@ -10,8 +10,8 @@ go run .\cmd\main.go seed:db
 ### Default User
 | Role  | Email                                         | Password |
 | ----- | --------------------------------------------- | -------- |
-| Admin | [admin@example.com](mailto:admin@example.com) | admin123 |
-| User  | [user@example.com](mailto:user@example.com)   | user123  |
+| Admin | [admin.bookstore@mail.com] | admin123 |
+| User  | [john_doe@mail.com]   | password  |
 
 ### Swagger URL
 http://localhost:8080/swagger/index.html#/Books/post_books
